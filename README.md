@@ -1,6 +1,6 @@
 # Angular Learning
 
-Angular is a JavaScript-based framework used to develop Single-Page Web Application (SPA).
+Angular is a JavaScript framework used to develop Single-Page Web Application (SPA).
 
 ## Angular version
 
@@ -57,7 +57,11 @@ Angular releases new version almost every year. So, it can be confused with begi
 
 ### Angular 11
 
+- Released on November 11, 2020
+
 ### Angular 12
+
+- Released on May 12, 2021
 
 ### Reference
 
@@ -88,4 +92,42 @@ ng serve --open
 
 **Tip:** If you want to install Angular CLI in specific version, you can use `npm install -g @angular/cli@version` like `npm install -g @angular/cli@9.1.0`.
 
-##
+## Folder Structure
+
+- main.ts - the first file that be run.
+- .editorconfig - helps maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs. EditorConfig format code like Prettier. Therefore, you can choose either Prettier or EditorConfig, or use both of it. The benefit is you don't need to change Prettier or ESLint config to match with specific project, EditorConfig will make every developer write the same code styles. [See more information on official website](https://editorconfig.org/).
+- .browserslistrc - allows specifying which browsers should be supported in your frontend app by specifying "queries" in a config file.
+- app/polyfills.ts - make your application compatible for different browsers because you write mostly in ES6 which is not compatible with IE.
+- karma.conf.js - karma is a test runner which provide testing environment to developers.
+
+## Basics
+
+Angular divides component into three parts: html, css, ts
+
+```html
+<!-- app.component.html -->
+<!-- You can use properties from ts in html -->
+<h1>Hello World! {{ title }}</h1>
+```
+
+## Components & Databinding
+
+## Directives
+
+## Services & Dependency Injection
+
+## Routing
+
+## Observables
+
+## Forms
+
+## Pipes
+
+## Data fetching
+
+## Optimizations & NgModules
+
+## Testing
+
+## Deploy
