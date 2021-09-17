@@ -112,6 +112,84 @@ Angular divides component into three parts: html, css, ts
 
 ## Components & Databinding
 
+Angular project is composed of components. The component include html, css and ts file. Angular will create app component which is the root component.
+
+```js
+// app.component.ts
+import { Component } from '@angular/core';
+
+// render in index.html
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  title = 'angular-learning';
+}
+```
+
+You can create component in app folder and the folder name should be the same as component's name.
+
+### Create your own component
+
+You can create a new component and include in Angular app via add it in the app.module.ts file.
+
+#### 1. Create component manually
+
+```js
+// example of a new component
+// server.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css'],
+})
+export class ServerComponent {
+  title = 'server';
+}
+```
+
+```js
+// app.module.ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+
+import { AppComponent } from './app.component';
+import { ServerComponent } from './server/server.component';
+
+@NgModule({
+  // add new component in declaration
+  declarations: [AppComponent, ServerComponent],
+  imports: [BrowserModule],
+  providers: [],
+  bootstrap: [AppComponent],
+})
+export class AppModule {}
+```
+
+```html
+<!-- app.component.html -->
+<h1>Hello World! {{ title }}</h1>
+<hr />
+<!-- Add server component -->
+<app-server></app-server>
+```
+
+### 2. Create Component via CLI
+
+You can also create component via Angular CLI as following:
+
+```
+ng generate component <component_name>
+or
+ng g c <component_name>
+```
+
+Angular will provide four files: html, css, ts and test, and update app.module.ts to import the generated component automatically.
+
 ## Directives
 
 ## Services & Dependency Injection
