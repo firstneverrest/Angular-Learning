@@ -1,1 +1,5 @@
-<p>todo works!</p>
+<h2>To-do List</h2>
+<input type="text" class="form-control" [(ngModel)]="todoList" />
+<input type="text" class="form-control" (input)="onUpdateTodoName($event)" />
+<p>{{ todoList }}</p>
+<button class="btn btn-primary" (click)="onEditTodo()">Add To-do List</button>
