@@ -92,6 +92,37 @@ ng serve --open
 
 **Tip:** If you want to install Angular CLI in specific version, you can use `npm install -g @angular/cli@version` like `npm install -g @angular/cli@9.1.0`.
 
+## Use bootstrap for styling in Angular
+
+1. install bootstrap package
+
+```
+npm i --save bootstrap
+```
+
+2. add bootstrap in angular.json
+
+```json
+// in architect section
+"architect": {
+    "build": {
+      "builder": "@angular-devkit/build-angular:browser",
+      "options": {
+        "outputPath": "dist/angular-learning",
+        "index": "src/index.html",
+        "main": "src/main.ts",
+        "polyfills": "src/polyfills.ts",
+        "tsConfig": "tsconfig.app.json",
+        "assets": ["src/favicon.ico", "src/assets"],
+        "styles": [
+          // add this line below
+          "node_modules/bootstrap/dist/css/bootstrap.min.css",
+          "src/styles.css"
+        ],
+        "scripts": []
+      },
+```
+
 ## Folder Structure
 
 - main.ts - the first file that be run.
@@ -100,19 +131,27 @@ ng serve --open
 - app/polyfills.ts - make your application compatible for different browsers because you write mostly in ES6 which is not compatible with IE.
 - karma.conf.js - karma is a test runner which provide testing environment to developers.
 
-## Basics
-
-Angular divides component into three parts: html, css, ts
-
-```html
-<!-- app.component.html -->
-<!-- You can use properties from ts in html -->
-<h1>Hello World! {{ title }}</h1>
-```
-
 ## Components & Databinding
 
-Angular project is composed of components. The component include html, css and ts file. Angular will create app component which is the root component.
+Angular project is composed of components. The component include html, css, ts and test file. Angular will create app component which is the root component.
+
+```js
+// app.component.ts
+import { Component } from '@angular/core';
+
+// render in index.html
+@Component({
+  // name of the component when use in HTML (not required)
+  selector: 'app-root',
+  // HTML code (must defined)
+  templateUrl: './app.component.html',
+  // CSS code (not required)
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent {
+  title = 'angular-learning';
+}
+```
 
 ```js
 // app.component.ts
@@ -121,8 +160,17 @@ import { Component } from '@angular/core';
 // render in index.html
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  // you can use template instead of templateUrl
+  // to define HTML code directly in ts file
+  template: '<app-server></app-server>',
+  // you can use styles instead of styleUrls
+  styles: [
+    `
+      .primary {
+        color: blue;
+      }
+    `,
+  ],
 })
 export class AppComponent {
   title = 'angular-learning';
@@ -178,7 +226,7 @@ export class AppModule {}
 <app-server></app-server>
 ```
 
-### 2. Create Component via CLI
+#### 2. Create Component via CLI
 
 You can also create component via Angular CLI as following:
 
@@ -189,6 +237,190 @@ ng g c <component_name>
 ```
 
 Angular will provide four files: html, css, ts and test, and update app.module.ts to import the generated component automatically.
+
+### Selector
+
+There are three ways of selecting the component in HTML file.
+
+#### 1. Select by Element
+
+```js
+// server.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css'],
+})
+export class ServerComponent {
+  title = 'server';
+}
+
+// app.component.html
+<div class="container">
+  <app-server></app-server>
+</div>;
+```
+
+#### 2. Select by Attribute
+
+```js
+// server.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: '[app-server]',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css'],
+})
+export class ServerComponent {
+  title = 'server';
+}
+
+// app.component.html
+<div class="container">
+  <div app-server></div>
+</div>;
+```
+
+#### 3. Select by Class
+
+```js
+// server.component.ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: '.app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css'],
+})
+export class ServerComponent {
+  title = 'server';
+}
+
+// app.component.html
+<div class="container">
+  <div class="app-server"></div>
+</div>;
+```
+
+### Databinding
+
+Databinding means communication. When you want TypeScript code to send output data to template (HTML), you can do string interpolation (`{{data}}`) or property binding (`[property]="data"`). When you want template (HTML) to react to user events, it will called event binding. The combination of both communication between TypeScript code and Template (HTML), it called **Two-way binding**.
+
+#### 1. String Interpolation
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-server',
+  templateUrl: './server.component.html',
+  styleUrls: ['./server.component.css'],
+})
+export class ServerComponent {
+  title: string = 'server';
+  serverId: number = 101;
+  serverStatus: string = 'online';
+
+  getServerStatus() {
+    return this.serverStatus;
+  }
+}
+```
+
+```html
+<h1>Title: {{ title }}</h1>
+<!-- Angular convert number to string -->
+<p>ServerID: {{ serverId }}</p>
+<p>serverStatus: {{ getServerStatus() }}</p>
+```
+
+#### 2. Property Binding
+
+```ts
+// todo.component.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-todo',
+  templateUrl: './todo.component.html',
+  styleUrls: ['./todo.component.css'],
+})
+export class TodoComponent implements OnInit {
+  allowAddTodo = false;
+
+  constructor() {
+    setTimeout(() => {
+      this.allowAddTodo = true;
+    }, 2000);
+  }
+
+  ngOnInit(): void {}
+}
+```
+
+```html
+<!-- todo.component.html -->
+<h2>To-do List</h2>
+<button class="btn btn-primary" [disabled]="allowAddTodo">
+  Add To-do List
+</button>
+```
+
+#### 3. Event Binding
+
+```js
+// todo.component.ts
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-todo',
+  templateUrl: './todo.component.html',
+  styleUrls: ['./todo.component.css'],
+})
+export class TodoComponent implements OnInit {
+  todoList = '';
+
+  constructor() {}
+
+  ngOnInit(): void {}
+
+  onEditTodo(): void {
+    this.todoList = 'Studying in the evening';
+  }
+
+  onUpdateTodoName(event: Event): void {
+    this.todoList = (<HTMLInputElement>event.target).value;
+  }
+}
+
+```
+
+```html
+<!-- todo.component.html -->
+<h2>To-do List</h2>
+<input type="text" class="form-control" (input)="onUpdateTodoName($event)" />
+<p>{{ todoList }}</p>
+<button class="btn btn-primary" (click)="onEditTodo()">Add To-do List</button>
+```
+
+#### Two-way binding
+
+Two-way binding will make the value update when the value is changed from anywhere. In the other hand, one-way binding will not change it's value when the value is changed from other function.
+
+<!-- todo.component.html -->
+
+```html
+<h2>To-do List</h2>
+<!-- two-way binding -->
+<input type="text" class="form-control" [(ngModel)]="todoList" />
+<!-- one-way binding -->
+<input type="text" class="form-control" (input)="onUpdateTodoName($event)" />
+<p>{{ todoList }}</p>
+<button class="btn btn-primary" (click)="onEditTodo()">Add To-do List</button>
+```
 
 ## Directives
 
